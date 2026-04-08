@@ -28,10 +28,8 @@
             overflow: hidden; position: relative;
         }
 
-        /* --- 左上角 Logo --- */
-        .page-logo { position: absolute; top: 40px; left: 40px; max-width: 170px; z-index: 100; transition: opacity 0.5s; }
-
-        /* --- 背景柔光粒子 --- */
+        /* --- 背景裝飾 --- */
+        .page-logo { position: absolute; top: 40px; left: 40px; max-width: 210px; z-index: 100; transition: opacity 0.5s; }
         .bg-glow { position: absolute; width: 100%; height: 100%; z-index: 0; }
         .glow-ball { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 25s infinite ease-in-out; }
         .g1 { width: 500px; height: 500px; background: #ffccbc; top: -10%; left: -5%; }
@@ -45,10 +43,12 @@
             backdrop-filter: blur(50px) saturate(200%);
             -webkit-backdrop-filter: blur(50px) saturate(200%);
             border: 1px solid var(--glass-border);
-            border-radius: 44px; padding: 70px 60px;
+            border-radius: 44px; padding: 70px 60px 45px;
             box-shadow: 0 20px 80px rgba(0, 0, 0, 0.08);
             position: relative; z-index: 10;
+            transition: all 0.8s var(--spring-easing);
         }
+        .card-exit { transform: scale(0.85); opacity: 0; filter: blur(20px); pointer-events: none; }
 
         /* --- 語言模組 --- */
         .lang-module { position: absolute; top: 30px; right: 30px; }
@@ -67,15 +67,14 @@
         .lang-module.active .lang-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
         .lang-dropdown div { padding: 10px 16px; cursor: pointer; font-size: 14px; color: var(--apple-text); border-radius: 12px; transition: all 0.2s ease; }
         .lang-dropdown div:hover { background-color: #f5f5f7; color: var(--jass-red); }
-        .lang-dropdown div.selected { font-weight: 700; color: var(--jass-red); }
 
         /* --- 標題區塊 --- */
         .header-content { text-align: left; margin-bottom: 50px; }
-        .header-content h1 { font-size: 44px; font-weight: 800; letter-spacing: -1.8px; color: var(--apple-dark); }
+        .header-content h1 { font-size: 44px; font-weight: 800; letter-spacing: -1.8px; color: var(--apple-dark); line-height: 1.1; }
         .header-content h1 span.gradient-a { background: var(--jass-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-content h2 { font-size: 24px; font-weight: 500; color: var(--apple-text); margin-top: 8px; }
+        .header-content h2 { font-size: 24px; font-weight: 500; color: var(--apple-text); margin-top: 2px; }
 
-        /* --- 輸入框與懸停發亮 --- */
+        /* --- 輸入組件 --- */
         .input-group { margin-bottom: 30px; position: relative; }
         input {
             width: 100%; height: 68px; padding: 0 60px 0 28px; border-radius: 22px; 
@@ -83,25 +82,17 @@
             font-size: 18px; color: var(--apple-dark); transition: all 0.4s var(--spring-easing); outline: none;
         }
         input:hover { background: rgba(255, 255, 255, 0.4); border-color: #FFD54F; box-shadow: var(--hover-glow); }
-        
-        /* 錯誤狀態： placeholder 變紅 */
-        input.error::placeholder { color: var(--jass-red); font-weight: 600; }
-
-        /* --- 核心優化：提醒未輸入 (直接在框內顯示) --- */
         input.error {
             border: 2px solid transparent;
             background-image: linear-gradient(white, white), var(--jass-gradient);
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
+            background-origin: border-box; background-clip: padding-box, border-box;
             animation: error-pulse 1.5s infinite;
         }
-
         @keyframes error-pulse {
             0% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0.5); }
             70% { box-shadow: 0 0 0 12px rgba(211, 17, 24, 0); }
             100% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0); }
         }
-
         .input-icon { position: absolute; right: 22px; top: 34px; transform: translateY(-50%); color: var(--apple-secondary); }
 
         /* --- 記住帳戶開關 --- */
@@ -114,12 +105,24 @@
         input:checked + .slider { background: var(--jass-gradient); }
         input:checked + .slider:before { transform: translateX(22px); }
 
+        /* --- 登入按鈕 --- */
         .btn-login {
             width: 100%; height: 68px; background: var(--jass-gradient); color: white !important;
             border: none; border-radius: 24px; font-size: 20px; font-weight: 600;
             cursor: pointer; transition: 0.4s var(--spring-easing); box-shadow: 0 12px 30px rgba(211, 17, 24, 0.2);
         }
         .btn-login:active { transform: scale(0.97); }
+
+        /* --- 底部版權字樣 --- */
+        .footer-copyright { margin-top: 35px; text-align: center; font-size: 13px; color: var(--apple-secondary); letter-spacing: 0.3px; opacity: 0.8; }
+
+        /* --- 成功進場面板 --- */
+        #system-dashboard { 
+            position: absolute; opacity: 0; transform: scale(1.1); 
+            pointer-events: none; transition: 1.2s var(--spring-easing); 
+            text-align: center; z-index: 5;
+        }
+        #system-dashboard.active { opacity: 1; transform: scale(1); }
 
         @keyframes smoothShake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-8px); } 30% { transform: translateX(6px); } }
         .spring-shake { animation: smoothShake 0.6s var(--spring-easing); }
@@ -153,14 +156,14 @@
             <h2 id="title-sub">車隊管理系統</h2>
         </div>
 
-        <form>
+        <form id="loginForm">
             <div class="input-group">
                 <input type="text" id="username" placeholder="帳戶" oninput="clearError('username')">
                 <i data-feather="user" class="input-icon"></i>
             </div>
             <div class="input-group">
                 <input type="password" id="password" placeholder="密碼" oninput="clearError('password')">
-                <i data-feather="eye" class="input-icon" style="cursor: pointer;" onclick="togglePass()"></i>
+                <i data-feather="eye" class="input-icon" id="toggleEye" style="cursor: pointer;" onclick="togglePass()"></i>
             </div>
             
             <div class="options-row">
@@ -172,16 +175,26 @@
 
             <button type="button" class="btn-login" id="loginBtn" onclick="validateLogin()">登入</button>
         </form>
+
+        <div class="footer-copyright">
+            © 2026 Flema Fleet Management
+        </div>
+    </div>
+
+    <div id="system-dashboard">
+        <h3 id="welcome-msg" style="font-size: 32px; font-weight: 700; color: var(--apple-dark);">歡迎進入系統</h3>
+        <p style="color: var(--apple-secondary); margin-top: 15px;">AFlema Fleet Management System 2026</p>
     </div>
 
     <script>
+        // 初始化圖示
         feather.replace();
         let currentLang = 'zh';
 
         const translations = {
-            zh: { sub: "車隊管理系統", user: "帳戶", pass: "密碼", btn: "登入", remember: "記住帳戶", errUser: "請輸入帳戶", errPass: "請輸入密碼" },
-            en: { sub: "Fleet Management System", user: "Username", pass: "Password", btn: "Sign In", remember: "Remember Me", errUser: "Username required", errPass: "Password required" },
-            vi: { sub: "Hệ thống quản lý đội xe", user: "Tên đăng nhập", pass: "Mật khẩu", btn: "Đăng nhập", remember: "Ghi nhớ", errUser: "Vui lòng nhập tài khoản", errPass: "Vui lòng nhập mật khẩu" }
+            zh: { sub: "車隊管理系統", user: "帳戶", pass: "密碼", btn: "登入", remember: "記住帳戶", errUser: "請輸入帳戶", errPass: "請輸入密碼", welcome: "歡迎進入系統" },
+            en: { sub: "Fleet Management System", user: "Username", pass: "Password", btn: "Sign In", remember: "Remember Me", errUser: "Username required", errPass: "Password required", welcome: "Welcome to System" },
+            vi: { sub: "Hệ thống quản lý đội xe", user: "Tên đăng nhập", pass: "Mật khẩu", btn: "Đăng nhập", remember: "Ghi nhớ", errUser: "Vui lòng nhập tài khoản", errPass: "Vui lòng nhập mật khẩu", welcome: "Chào mừng đến với hệ thống" }
         };
 
         function toggleLang(e) { e.stopPropagation(); document.getElementById('langModule').classList.toggle('active'); }
@@ -194,19 +207,14 @@
             document.getElementById('loginBtn').innerText = d.btn;
             document.getElementById('current-lang').innerText = e.target.innerText;
             
-            // 同時重置 Placeholder 為該語言的預設文字
             const u = document.getElementById('username'), p = document.getElementById('password');
             if(!u.classList.contains('error')) u.placeholder = d.user;
-            else u.placeholder = d.errUser;
-            
             if(!p.classList.contains('error')) p.placeholder = d.pass;
-            else p.placeholder = d.errPass;
 
             document.querySelectorAll('.lang-dropdown div').forEach(div => div.classList.remove('selected'));
             e.target.classList.add('selected');
         }
 
-        // 當使用者開始輸入時，恢復原本的 Placeholder 文字
         function clearError(id) {
             const input = document.getElementById(id);
             if (input.classList.contains('error')) {
@@ -215,32 +223,38 @@
             }
         }
 
+        // --- 密碼眼睛切換功能更新 ---
         function togglePass() {
-            const p = document.getElementById('password');
-            p.type = p.type === 'password' ? 'text' : 'password';
+            const passInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('toggleEye');
+            
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.setAttribute('data-feather', 'eye-off'); // 切換為閉眼圖示
+            } else {
+                passInput.type = 'password';
+                eyeIcon.setAttribute('data-feather', 'eye'); // 切換回開眼圖示
+            }
+            feather.replace(); // 重新渲染 Feather Icons
         }
 
         function validateLogin() {
             const u = document.getElementById('username'), p = document.getElementById('password'), card = document.getElementById('loginCard'), d = translations[currentLang];
             let v = true;
             
-            if (!u.value.trim()) { 
-                u.classList.add('error'); 
-                u.placeholder = d.errUser; // 將提示字眼設為 Placeholder
-                v = false; 
-            }
-            if (!p.value.trim()) { 
-                p.classList.add('error'); 
-                p.placeholder = d.errPass; // 將提示字眼設為 Placeholder
-                v = false; 
-            }
+            if (!u.value.trim()) { u.classList.add('error'); u.placeholder = d.errUser; v = false; }
+            if (!p.value.trim()) { p.classList.add('error'); p.placeholder = d.errPass; v = false; }
             
             if (!v) { 
                 card.classList.remove('spring-shake'); 
                 void card.offsetWidth; 
                 card.classList.add('spring-shake'); 
             } else { 
-                alert("Login Success"); 
+                card.classList.add('card-exit');
+                document.getElementById('mainLogo').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('system-dashboard').classList.add('active');
+                }, 500);
             }
         }
     </script>
