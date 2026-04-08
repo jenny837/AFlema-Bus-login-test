@@ -18,126 +18,143 @@
             --glass-border: rgba(255, 255, 255, 0.7);
             --spring-easing: cubic-bezier(0.25, 1, 0.5, 1);
             --hover-glow: 0 0 15px rgba(255, 213, 79, 0.5);
+            --body-bg: radial-gradient(circle at top left, #f5f7fa, #e3eeff);
+        }
+
+        body.dark-mode {
+            --apple-dark: #f5f5f7;
+            --apple-text: #d2d2d7;
+            --apple-secondary: #86868b;
+            --glass-bg: rgba(28, 28, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --body-bg: radial-gradient(circle at top left, #1c1c1e, #000000);
+            --hover-glow: 0 0 20px rgba(211, 17, 24, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; -webkit-font-smoothing: antialiased; }
 
         body {
             height: 100vh; display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle at top left, #f5f7fa, #e3eeff);
+            background: var(--body-bg);
             overflow: hidden; position: relative;
+            transition: background 0.6s var(--spring-easing);
+            padding: 20px;
+        }
+
+        /* --- 左上角 Logo --- */
+        .page-logo { position: absolute; top: 40px; left: 40px; max-width: 180px; z-index: 101; transition: opacity 0.5s; }
+
+        /* --- 右上角控制區 (平行 Logo 高度) --- */
+        .top-right-area {
+            position: absolute; top: 40px; right: 40px;
+            display: flex; align-items: center; gap: 25px; z-index: 101;
         }
 
         /* --- 背景裝飾 --- */
-        .page-logo { position: absolute; top: 40px; left: 40px; max-width: 210px; z-index: 100; transition: opacity 0.5s; }
-        .bg-glow { position: absolute; width: 100%; height: 100%; z-index: 0; }
-        .glow-ball { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 25s infinite ease-in-out; }
+        .bg-glow { position: absolute; width: 100%; height: 100%; z-index: 0; top: 0; left: 0; }
+        .glow-ball { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; animation: float 25s infinite ease-in-out; transition: opacity 0.6s; }
         .g1 { width: 500px; height: 500px; background: #ffccbc; top: -10%; left: -5%; }
         .g2 { width: 400px; height: 400px; background: #c3cfe2; bottom: -5%; right: 5%; }
+        body.dark-mode .glow-ball { opacity: 0.15; }
         @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(30px, -40px); } }
 
-        /* --- 登入卡片 --- */
+        /* --- 登入卡片：隨螢幕縮放 --- */
         .login-card {
-            width: 100%; max-width: 500px;
+            width: clamp(320px, 95%, 500px); 
+            max-height: 90vh;
+            overflow-y: auto;
             background: var(--glass-bg);
             backdrop-filter: blur(50px) saturate(200%);
             -webkit-backdrop-filter: blur(50px) saturate(200%);
             border: 1px solid var(--glass-border);
-            border-radius: 44px; padding: 70px 60px 45px;
+            border-radius: 44px; padding: 60px 50px 45px;
             box-shadow: 0 20px 80px rgba(0, 0, 0, 0.08);
             position: relative; z-index: 10;
-            transition: all 0.8s var(--spring-easing);
+            transition: all 0.8s var(--spring-easing), background 0.6s ease;
         }
-        .card-exit { transform: scale(0.85); opacity: 0; filter: blur(20px); pointer-events: none; }
 
         /* --- 語言模組 --- */
-        .lang-module { position: absolute; top: 30px; right: 30px; }
+        .lang-module { position: relative; }
         .lang-btn {
-            background: rgba(255, 255, 255, 0.3); border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;
             display: flex; align-items: center; gap: 6px; color: var(--apple-dark); transition: 0.3s;
         }
-        .lang-btn:hover { background: white; box-shadow: 0 0 15px rgba(255, 130, 0, 0.2); }
+        body.dark-mode .lang-btn { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.1); }
         .lang-dropdown {
-            position: absolute; right: 0; top: 50px; width: 150px;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+            position: absolute; right: 0; top: 45px; width: 150px;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px);
             border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid white; padding: 6px; opacity: 0; transform: translateY(-10px) scale(0.95); pointer-events: none; transition: 0.3s; z-index: 100;
+            border: 1px solid white; padding: 6px; opacity: 0; transform: translateY(-10px) scale(0.95); pointer-events: none; transition: 0.3s;
         }
+        body.dark-mode .lang-dropdown { background: rgba(44, 44, 46, 0.95); border-color: rgba(255, 255, 255, 0.1); }
         .lang-module.active .lang-dropdown { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-        .lang-dropdown div { padding: 10px 16px; cursor: pointer; font-size: 14px; color: var(--apple-text); border-radius: 12px; transition: all 0.2s ease; }
-        .lang-dropdown div:hover { background-color: #f5f5f7; color: var(--jass-red); }
+        .lang-dropdown div { padding: 10px 16px; cursor: pointer; font-size: 14px; color: var(--apple-text); border-radius: 12px; transition: 0.2s; }
+        .lang-dropdown div:hover { background-color: rgba(0,0,0,0.05); color: var(--jass-red); }
 
         /* --- 標題區塊 --- */
-        .header-content { text-align: left; margin-bottom: 50px; }
-        .header-content h1 { font-size: 44px; font-weight: 800; letter-spacing: -1.8px; color: var(--apple-dark); line-height: 1.1; }
+        .header-content { text-align: left; margin-bottom: 40px; }
+        .header-content h1 { font-size: clamp(32px, 8vw, 44px); font-weight: 800; letter-spacing: -1.8px; color: var(--apple-dark); line-height: 1.1; }
         .header-content h1 span.gradient-a { background: var(--jass-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-content h2 { font-size: 24px; font-weight: 500; color: var(--apple-text); margin-top: 2px; }
+        .header-content h2 { font-size: clamp(18px, 5vw, 24px); font-weight: 500; color: var(--apple-text); margin-top: 2px; }
 
         /* --- 輸入組件 --- */
-        .input-group { margin-bottom: 30px; position: relative; }
+        .input-group { margin-bottom: 25px; position: relative; }
         input {
-            width: 100%; height: 68px; padding: 0 60px 0 28px; border-radius: 22px; 
+            width: 100%; height: 64px; padding: 0 60px 0 25px; border-radius: 20px; 
             border: 1.5px solid rgba(0,0,0,0.05); background: rgba(255, 255, 255, 0.15);
-            font-size: 18px; color: var(--apple-dark); transition: all 0.4s var(--spring-easing); outline: none;
+            font-size: 17px; color: var(--apple-dark); transition: all 0.4s var(--spring-easing); outline: none;
         }
-        input:hover { background: rgba(255, 255, 255, 0.4); border-color: #FFD54F; box-shadow: var(--hover-glow); }
-        input.error {
-            border: 2px solid transparent;
-            background-image: linear-gradient(white, white), var(--jass-gradient);
-            background-origin: border-box; background-clip: padding-box, border-box;
-            animation: error-pulse 1.5s infinite;
-        }
-        @keyframes error-pulse {
-            0% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0.5); }
-            70% { box-shadow: 0 0 0 12px rgba(211, 17, 24, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(211, 17, 24, 0); }
-        }
-        .input-icon { position: absolute; right: 22px; top: 34px; transform: translateY(-50%); color: var(--apple-secondary); }
+        body.dark-mode input { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
+        input:hover { background: rgba(255, 255, 255, 0.3); border-color: #FFD54F; box-shadow: var(--hover-glow); }
+        input.error { border: 2px solid transparent; background-image: linear-gradient(white, white), var(--jass-gradient); background-origin: border-box; background-clip: padding-box, border-box; animation: error-pulse 1.5s infinite; }
+        .input-icon { position: absolute; right: 22px; top: 32px; transform: translateY(-50%); color: var(--apple-secondary); }
 
-        /* --- 記住帳戶開關 --- */
-        .options-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 5px 40px; }
-        .switch-container { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 15px; color: var(--apple-text); }
-        .switch { position: relative; width: 50px; height: 28px; }
+        /* --- 開關組件 --- */
+        .options-row { display: flex; justify-content: flex-start; align-items: center; margin: 10px 5px 35px; }
+        .switch-container { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--apple-text); transition: color 0.4s; }
+        .switch { position: relative; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; inset: 0; background-color: #d1d1d6; transition: 0.4s var(--spring-easing); border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.4s var(--spring-easing); }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.4s var(--spring-easing); }
         input:checked + .slider { background: var(--jass-gradient); }
-        input:checked + .slider:before { transform: translateX(22px); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         /* --- 登入按鈕 --- */
         .btn-login {
-            width: 100%; height: 68px; background: var(--jass-gradient); color: white !important;
-            border: none; border-radius: 24px; font-size: 20px; font-weight: 600;
+            width: 100%; height: 64px; background: var(--jass-gradient); color: white !important;
+            border: none; border-radius: 22px; font-size: 19px; font-weight: 600;
             cursor: pointer; transition: 0.4s var(--spring-easing); box-shadow: 0 12px 30px rgba(211, 17, 24, 0.2);
         }
         .btn-login:active { transform: scale(0.97); }
 
-        /* --- 底部版權字樣 --- */
-        .footer-copyright { margin-top: 35px; text-align: center; font-size: 13px; color: var(--apple-secondary); letter-spacing: 0.3px; opacity: 0.8; }
+        .footer-copyright { margin-top: 35px; text-align: center; font-size: 13px; color: var(--apple-secondary); opacity: 0.8; }
 
-        /* --- 成功進場面板 --- */
-        #system-dashboard { 
-            position: absolute; opacity: 0; transform: scale(1.1); 
-            pointer-events: none; transition: 1.2s var(--spring-easing); 
-            text-align: center; z-index: 5;
-        }
+        /* --- 成功與動畫 --- */
+        #system-dashboard { position: absolute; opacity: 0; transform: scale(1.1); pointer-events: none; transition: 1.2s var(--spring-easing); text-align: center; z-index: 5; }
         #system-dashboard.active { opacity: 1; transform: scale(1); }
-
         @keyframes smoothShake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-8px); } 30% { transform: translateX(6px); } }
         .spring-shake { animation: smoothShake 0.6s var(--spring-easing); }
+        .card-exit { transform: scale(0.85); opacity: 0; filter: blur(20px); pointer-events: none; }
+
+        /* 行動裝置適應 */
+        @media (max-width: 600px) {
+            .page-logo { top: 20px; left: 20px; max-width: 140px; }
+            .top-right-area { top: 20px; right: 20px; gap: 15px; }
+            .login-card { padding: 50px 30px 40px; border-radius: 32px; }
+        }
     </style>
 </head>
 <body>
 
     <img src="img/logo.png" alt="JassLin" class="page-logo" id="mainLogo">
 
-    <div class="bg-glow">
-        <div class="glow-ball g1"></div>
-        <div class="glow-ball g2"></div>
-    </div>
+    <div class="top-right-area">
+        <label class="switch-container">
+            <div class="switch"><input type="checkbox" id="darkModeToggle" onclick="toggleDarkMode()"><span class="slider"></span></div>
+            <span id="text-darkmode" style="font-weight: 600; color: var(--apple-dark);">夜間模式</span>
+        </label>
 
-    <div class="login-card" id="loginCard">
         <div class="lang-module" id="langModule">
             <button class="lang-btn" onclick="toggleLang(event)">
                 <i data-feather="globe" style="width:16px;"></i>
@@ -150,7 +167,14 @@
                 <div onclick="changeLang('vi', event)">Tiếng Việt</div>
             </div>
         </div>
+    </div>
 
+    <div class="bg-glow">
+        <div class="glow-ball g1"></div>
+        <div class="glow-ball g2"></div>
+    </div>
+
+    <div class="login-card" id="loginCard">
         <div class="header-content">
             <h1><span class="gradient-a">A</span>Flema Bus</h1>
             <h2 id="title-sub">車隊管理系統</h2>
@@ -176,9 +200,7 @@
             <button type="button" class="btn-login" id="loginBtn" onclick="validateLogin()">登入</button>
         </form>
 
-        <div class="footer-copyright">
-            © 2026 Flema Fleet Management
-        </div>
+        <div class="footer-copyright">© 2026 Flema Fleet Management</div>
     </div>
 
     <div id="system-dashboard">
@@ -187,16 +209,16 @@
     </div>
 
     <script>
-        // 初始化圖示
         feather.replace();
         let currentLang = 'zh';
 
         const translations = {
-            zh: { sub: "車隊管理系統", user: "帳戶", pass: "密碼", btn: "登入", remember: "記住帳戶", errUser: "請輸入帳戶", errPass: "請輸入密碼", welcome: "歡迎進入系統" },
-            en: { sub: "Fleet Management System", user: "Username", pass: "Password", btn: "Sign In", remember: "Remember Me", errUser: "Username required", errPass: "Password required", welcome: "Welcome to System" },
-            vi: { sub: "Hệ thống quản lý đội xe", user: "Tên đăng nhập", pass: "Mật khẩu", btn: "Đăng nhập", remember: "Ghi nhớ", errUser: "Vui lòng nhập tài khoản", errPass: "Vui lòng nhập mật khẩu", welcome: "Chào mừng đến với hệ thống" }
+            zh: { sub: "車隊管理系統", user: "帳戶", pass: "密碼", btn: "登入", remember: "記住帳戶", dark: "夜間模式", errUser: "請輸入帳戶", errPass: "請輸入密碼", welcome: "歡迎進入系統" },
+            en: { sub: "Fleet Management System", user: "Username", pass: "Password", btn: "Sign In", remember: "Remember Me", dark: "Dark Mode", errUser: "Username required", errPass: "Password required", welcome: "Welcome to System" },
+            vi: { sub: "Hệ thống quản lý đội xe", user: "Tên đăng nhập", pass: "Mật khẩu", btn: "Đăng nhập", remember: "Ghi nhớ", dark: "Chế độ tối", errUser: "Vui lòng nhập tài khoản", errPass: "Vui lòng nhập mật khẩu", welcome: "Chào mừng đến với hệ thống" }
         };
 
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
         function toggleLang(e) { e.stopPropagation(); document.getElementById('langModule').classList.toggle('active'); }
         window.onclick = () => document.getElementById('langModule').classList.remove('active');
 
@@ -204,13 +226,12 @@
             currentLang = lang; const d = translations[lang];
             document.getElementById('title-sub').innerText = d.sub;
             document.getElementById('text-remember').innerText = d.remember;
+            document.getElementById('text-darkmode').innerText = d.dark;
             document.getElementById('loginBtn').innerText = d.btn;
             document.getElementById('current-lang').innerText = e.target.innerText;
-            
             const u = document.getElementById('username'), p = document.getElementById('password');
             if(!u.classList.contains('error')) u.placeholder = d.user;
             if(!p.classList.contains('error')) p.placeholder = d.pass;
-
             document.querySelectorAll('.lang-dropdown div').forEach(div => div.classList.remove('selected'));
             e.target.classList.add('selected');
         }
@@ -223,38 +244,29 @@
             }
         }
 
-        // --- 密碼眼睛切換功能更新 ---
         function togglePass() {
             const passInput = document.getElementById('password');
             const eyeIcon = document.getElementById('toggleEye');
-            
             if (passInput.type === 'password') {
-                passInput.type = 'text';
-                eyeIcon.setAttribute('data-feather', 'eye-off'); // 切換為閉眼圖示
+                passInput.type = 'text'; eyeIcon.setAttribute('data-feather', 'eye-off');
             } else {
-                passInput.type = 'password';
-                eyeIcon.setAttribute('data-feather', 'eye'); // 切換回開眼圖示
+                passInput.type = 'password'; eyeIcon.setAttribute('data-feather', 'eye');
             }
-            feather.replace(); // 重新渲染 Feather Icons
+            feather.replace();
         }
 
         function validateLogin() {
             const u = document.getElementById('username'), p = document.getElementById('password'), card = document.getElementById('loginCard'), d = translations[currentLang];
             let v = true;
-            
             if (!u.value.trim()) { u.classList.add('error'); u.placeholder = d.errUser; v = false; }
             if (!p.value.trim()) { p.classList.add('error'); p.placeholder = d.errPass; v = false; }
-            
             if (!v) { 
-                card.classList.remove('spring-shake'); 
-                void card.offsetWidth; 
-                card.classList.add('spring-shake'); 
+                card.classList.remove('spring-shake'); void card.offsetWidth; card.classList.add('spring-shake'); 
             } else { 
                 card.classList.add('card-exit');
                 document.getElementById('mainLogo').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('system-dashboard').classList.add('active');
-                }, 500);
+                document.querySelector('.top-right-area').style.opacity = '0';
+                setTimeout(() => { document.getElementById('system-dashboard').classList.add('active'); }, 500);
             }
         }
     </script>
