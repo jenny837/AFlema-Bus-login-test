@@ -11,7 +11,7 @@
             --jass-red: #D31118;
             --jass-orange: #FF8200;
             --jass-gradient: linear-gradient(135deg, var(--jass-red) 0%, var(--jass-orange) 100%);
-            --apple-dark: #1d1d1f; 
+            --apple-dark: #1d1d1f;
             --apple-text: #424245;
             --apple-secondary: #86868b;
             --glass-bg: rgba(255, 255, 255, 0.4);
@@ -48,7 +48,45 @@
         .top-right-area {
             position: absolute; top: 40px; right: 40px;
             display: flex; align-items: center; gap: 25px; z-index: 101;
+            transition: opacity 0.5s;
         }
+
+        /* 右上角：夜間模式（左）＋翻譯（右），登入與內頁一致顯示 */
+        .top-right-area { z-index: 110; }
+        /* 右上角控制：縮小但仍清楚（老花可讀） */
+        .top-right-area { gap: 16px; }
+        .top-right-area .switch-container {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.26);
+            padding: 6px 10px;
+            border-radius: 999px;
+            backdrop-filter: blur(14px);
+            font-size: 13px;
+            font-weight: 650;
+            gap: 8px;
+            color: var(--apple-dark);
+            line-height: 1;
+            min-height: 36px;
+        }
+        body.dark-mode .top-right-area .switch-container { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
+        .top-right-area .switch { width: 40px; height: 22px; }
+        .top-right-area .slider:before { height: 16px; width: 16px; left: 3px; bottom: 3px; }
+        .top-right-area input:checked + .slider:before { transform: translateX(18px); }
+
+        .top-right-area .lang-btn {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.26);
+            padding: 6px 10px;
+            border-radius: 999px;
+            min-height: 36px;
+            font-size: 13px;
+            font-weight: 650;
+            gap: 6px;
+            line-height: 1;
+        }
+        body.dark-mode .top-right-area .lang-btn { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.12); }
+        .top-right-area .lang-btn i[data-feather="globe"] { width: 15px !important; height: 15px !important; }
+        .top-right-area .lang-btn i[data-feather="chevron-down"] { width: 13px !important; height: 13px !important; }
 
         /* --- 背景裝飾 --- */
         .bg-glow { position: absolute; width: 100%; height: 100%; z-index: 0; top: 0; left: 0; }
@@ -60,7 +98,7 @@
 
         /* --- 登入卡片：隨螢幕縮放 --- */
         .login-card {
-            width: clamp(320px, 95%, 500px); 
+            width: clamp(320px, 95%, 500px);
             max-height: 90vh;
             overflow-y: auto;
             background: var(--glass-bg);
@@ -95,13 +133,13 @@
         /* --- 標題區塊 --- */
         .header-content { text-align: left; margin-bottom: 40px; }
         .header-content h1 { font-size: clamp(32px, 8vw, 44px); font-weight: 800; letter-spacing: -1.8px; color: var(--apple-dark); line-height: 1.1; }
-        .header-content h1 span.gradient-a { background: var(--jass-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-content h1 span.gradient-a { background: var(--jass-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header-content h2 { font-size: clamp(18px, 5vw, 24px); font-weight: 500; color: var(--apple-text); margin-top: 2px; }
 
         /* --- 輸入組件 --- */
         .input-group { margin-bottom: 25px; position: relative; }
         input {
-            width: 100%; height: 64px; padding: 0 60px 0 25px; border-radius: 20px; 
+            width: 100%; height: 64px; padding: 0 60px 0 25px; border-radius: 20px;
             border: 1.5px solid rgba(0,0,0,0.05); background: rgba(255, 255, 255, 0.15);
             font-size: 17px; color: var(--apple-dark); transition: all 0.4s var(--spring-easing); outline: none;
         }
@@ -131,17 +169,222 @@
         .footer-copyright { margin-top: 35px; text-align: center; font-size: 13px; color: var(--apple-secondary); opacity: 0.8; }
 
         /* --- 成功與動畫 --- */
-        #system-dashboard { position: absolute; opacity: 0; transform: scale(1.1); pointer-events: none; transition: 1.2s var(--spring-easing); text-align: center; z-index: 5; }
-        #system-dashboard.active { opacity: 1; transform: scale(1); }
         @keyframes smoothShake { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-8px); } 30% { transform: translateX(6px); } }
         .spring-shake { animation: smoothShake 0.6s var(--spring-easing); }
         .card-exit { transform: scale(0.85); opacity: 0; filter: blur(20px); pointer-events: none; }
+
+        /* --- 內頁（參考 ISO 內頁結構） --- */
+        #system-dashboard { position: fixed; inset: 0; padding: 0; opacity: 0; transform: scale(1.06); pointer-events: none; transition: 1.2s var(--spring-easing); z-index: 20; display: flex; align-items: center; justify-content: center; }
+        #system-dashboard.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+        .dash-shell {
+            width: calc(100vw - 44px);
+            height: calc(100vh - 44px);
+            border-radius: 32px;
+            display: flex;
+            gap: 18px;
+            padding: 18px;
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(210%);
+            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.08);
+        }
+
+        .dash-sidebar {
+            width: 220px;
+            height: 100%;
+            border-right: 1px solid var(--glass-border);
+            padding: 26px 14px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .dash-sidebar.collapsed { width: 72px; padding: 26px 0; }
+
+        /* 右側內容與側欄保留安全距離（避免卡片陰影視覺重疊） */
+        .dash-main { min-width: 0; }
+
+        .dash-sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding: 0 10px;
+            height: 40px;
+        }
+        .dash-sidebar.collapsed .dash-sidebar-header { justify-content: center; padding: 0; }
+
+        .dash-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+        .dash-sidebar.collapsed .dash-brand { display: none; }
+        .dash-brand-mark {
+            font-weight: 900;
+            font-size: 20px;
+            letter-spacing: -0.8px;
+            white-space: nowrap;
+            background: var(--jass-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dash-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: var(--apple-dark);
+            flex-shrink: 0;
+            transition: background 0.2s ease;
+        }
+        .dash-toggle svg { pointer-events: none; }
+        .dash-toggle:hover { background: rgba(0,0,0,0.05); }
+        body.dark-mode .dash-toggle:hover { background: rgba(255,255,255,0.06); }
+
+        .dash-nav { margin-top: 10px; }
+        .dash-nav-item {
+            padding: 12px 14px;
+            border-radius: 14px;
+            color: var(--apple-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-bottom: 8px;
+        }
+        .dash-sidebar.collapsed .dash-nav-item {
+            justify-content: center;
+            padding: 12px 0;
+            margin-left: auto;
+            margin-right: auto;
+            width: 45px;
+        }
+
+        .dash-nav-icon {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .dash-nav-text {
+            margin-left: 14px;
+            white-space: nowrap;
+            transition: 0.35s;
+            font-weight: 600;
+            color: var(--apple-text);
+        }
+        body.dark-mode .dash-nav-text { color: var(--apple-text); }
+        .dash-sidebar.collapsed .dash-nav-text { display: none; }
+
+        .dash-nav-item.active {
+            background: rgba(255, 255, 255, 0.45);
+            color: #ff6a00;
+        }
+        body.dark-mode .dash-nav-item.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffb36b;
+        }
+
+        .dash-user {
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .dash-user-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 16px;
+        }
+        .dash-sidebar.collapsed .dash-user-row { justify-content: center; padding: 10px 0; }
+        .dash-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            background: var(--jass-gradient);
+            flex-shrink: 0;
+        }
+        .dash-user-meta { min-width: 0; }
+        .dash-user-name { font-size: 12px; font-weight: 800; color: var(--apple-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dash-user-logout { margin-top: 2px; font-size: 10px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(211, 17, 24, 0.9); background: none; border: none; cursor: pointer; padding: 0; text-align: left; }
+        .dash-sidebar.collapsed .dash-user-meta { display: none; }
+
+        .dash-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .dash-header {
+            padding: 34px 44px 0;
+            margin-bottom: 20px;
+        }
+        .dash-header h1 { font-size: 34px; font-weight: 800; color: var(--apple-dark); letter-spacing: -1px; }
+        .dash-header p { color: var(--apple-secondary); font-size: 15px; margin-top: 6px; }
+
+        .dash-content { position: relative; flex: 1; padding: 0 44px 34px; }
+        .dash-page { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: 0.45s; }
+        .dash-page.active { opacity: 1; visibility: visible; }
+
+        .dash-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
+        .dash-card {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 26px;
+            padding: 26px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+        body.dark-mode .dash-card { background: rgba(255, 255, 255, 0.06); }
+        .dash-card h3 { font-size: 11px; color: var(--apple-secondary); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 14px; font-weight: 800; }
+        .dash-card .value { font-size: 34px; font-weight: 900; color: var(--apple-dark); letter-spacing: -0.5px; }
+        .dash-card .unit { font-size: 14px; font-weight: 700; color: var(--apple-secondary); margin-left: 4px; vertical-align: baseline; }
+
+        .dash-map-frame {
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            position: relative;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.08);
+        }
+        body.dark-mode .dash-map-frame { background: rgba(255, 255, 255, 0.06); }
+        .dash-map-canvas {
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'%3E%3Cpath d='M0,500 L1000,500 M500,0 L500,1000' stroke='%23E0E0E0' stroke-width='2'/%3E%3Cpath d='M100,100 L400,400 L800,300' stroke='%23ff8200' stroke-width='8' fill='none'/%3E%3C/svg%3E");
+            opacity: 0.9;
+        }
 
         /* 行動裝置適應 */
         @media (max-width: 600px) {
             .page-logo { top: 20px; left: 20px; max-width: 140px; }
             .top-right-area { top: 20px; right: 20px; gap: 15px; }
             .login-card { padding: 50px 30px 40px; border-radius: 32px; }
+            .dash-shell { width: calc(100vw - 24px); height: calc(100vh - 24px); }
+            .dash-header { padding: 26px 22px 0; }
+            .dash-content { padding: 0 22px 22px; }
         }
     </style>
 </head>
@@ -174,6 +417,7 @@
         <div class="glow-ball g2"></div>
     </div>
 
+    <!-- 登入頁：完整沿用 1-1紅橘漸層登入動畫+夜間模式-展示網頁.html -->
     <div class="login-card" id="loginCard">
         <div class="header-content">
             <h1><span class="gradient-a">A</span>Flema Bus</h1>
@@ -189,7 +433,7 @@
                 <input type="password" id="password" placeholder="密碼" oninput="clearError('password')">
                 <i data-feather="eye" class="input-icon" id="toggleEye" style="cursor: pointer;" onclick="togglePass()"></i>
             </div>
-            
+
             <div class="options-row">
                 <label class="switch-container">
                     <div class="switch"><input type="checkbox" checked><span class="slider"></span></div>
@@ -203,9 +447,81 @@
         <div class="footer-copyright">© 2026 Flema Fleet Management</div>
     </div>
 
-    <div id="system-dashboard">
-        <h3 id="welcome-msg" style="font-size: 32px; font-weight: 700; color: var(--apple-dark);">歡迎進入系統</h3>
-        <p style="color: var(--apple-secondary); margin-top: 15px;">AFlema Fleet Management System 2026</p>
+    <!-- 內頁：參考 1+2-ISO漸層 的結構，改為紅橘玻璃風格 -->
+    <div id="system-dashboard" aria-hidden="true">
+        <div class="dash-shell">
+            <aside class="dash-sidebar" id="dashSidebar">
+                <div class="dash-sidebar-header">
+                    <div class="dash-brand" aria-label="AFlema">
+                        <div class="dash-brand-mark">AFlema</div>
+                    </div>
+                    <button class="dash-toggle" type="button" onclick="toggleDashSidebar()" aria-label="Toggle menu">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="dash-nav">
+                    <div class="dash-nav-item active" onclick="switchDashPage('overview', this)">
+                        <span class="dash-nav-icon">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        </span>
+                        <span class="dash-nav-text">系統總覽</span>
+                    </div>
+                    <div class="dash-nav-item" onclick="switchDashPage('tracking', this)">
+                        <span class="dash-nav-icon">
+                            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </span>
+                        <span class="dash-nav-text">車輛監控</span>
+                    </div>
+                    <div class="dash-nav-item" onclick="switchDashPage('dispatch', this)">
+                        <span class="dash-nav-icon">
+                            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
+                        </span>
+                        <span class="dash-nav-text">派遣任務</span>
+                    </div>
+                </nav>
+
+                <div class="dash-user">
+                    <div class="dash-user-row">
+                        <div class="dash-avatar" aria-hidden="true">A</div>
+                        <div class="dash-user-meta">
+                            <div class="dash-user-name" id="dashUserName">Jass Lin</div>
+                            <button class="dash-user-logout" type="button" onclick="logoutToLogin()">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="dash-main">
+                <header class="dash-header">
+                    <h1 id="dashWelcome">營運儀表板</h1>
+                    <p id="dashDesc">目前車隊運作正常。</p>
+                </header>
+
+                <div class="dash-content">
+                    <section class="dash-page active" id="dash-page-overview">
+                        <div class="dash-stats">
+                            <div class="dash-card"><h3>車隊在線率</h3><div class="value">98.2<span class="unit">%</span></div></div>
+                            <div class="dash-card"><h3>今日里程</h3><div class="value">2,450<span class="unit">KM</span></div></div>
+                            <div class="dash-card"><h3>活躍車輛</h3><div class="value">46<span class="unit">台</span></div></div>
+                            <div class="dash-card"><h3>警示事件</h3><div class="value">3<span class="unit">件</span></div></div>
+                        </div>
+                    </section>
+
+                    <section class="dash-page" id="dash-page-tracking">
+                        <div class="dash-map-frame"><div class="dash-map-canvas"></div></div>
+                    </section>
+
+                    <section class="dash-page" id="dash-page-dispatch">
+                        <div class="dash-card"><h3>任務列表</h3><div class="value">載入中<span class="unit">…</span></div></div>
+                    </section>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script>
@@ -260,15 +576,51 @@
             let v = true;
             if (!u.value.trim()) { u.classList.add('error'); u.placeholder = d.errUser; v = false; }
             if (!p.value.trim()) { p.classList.add('error'); p.placeholder = d.errPass; v = false; }
-            if (!v) { 
-                card.classList.remove('spring-shake'); void card.offsetWidth; card.classList.add('spring-shake'); 
-            } else { 
+            if (!v) {
+                card.classList.remove('spring-shake'); void card.offsetWidth; card.classList.add('spring-shake');
+            } else {
                 card.classList.add('card-exit');
                 document.getElementById('mainLogo').style.opacity = '0';
-                document.querySelector('.top-right-area').style.opacity = '0';
+                // 夜間模式持續顯示；翻譯模組會移至側欄
                 setTimeout(() => { document.getElementById('system-dashboard').classList.add('active'); }, 500);
             }
         }
+
+        // 內頁互動：參考 ISO 內頁（不影響登入頁邏輯）
+        function toggleDashSidebar() { document.getElementById('dashSidebar').classList.toggle('collapsed'); }
+
+        function switchDashPage(pageId, element) {
+            document.querySelectorAll('.dash-nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+            document.querySelectorAll('.dash-page').forEach(p => p.classList.remove('active'));
+            document.getElementById('dash-page-' + pageId).classList.add('active');
+        }
+
+        function logoutToLogin() {
+            // 保留登入頁程式不動：這裡只做最小回到登入（不更動 validateLogin 流程）
+            document.getElementById('system-dashboard').classList.remove('active');
+            document.getElementById('loginCard').classList.remove('card-exit');
+            document.getElementById('mainLogo').style.opacity = '1';
+            document.getElementById('password').type = 'password';
+            const eyeIcon = document.getElementById('toggleEye');
+            eyeIcon.setAttribute('data-feather', 'eye');
+            feather.replace();
+        }
+
+        // 登入成功後初始化內頁文字（不改動登入流程，只監看 active 狀態）
+        let dashInitialized = false;
+        const dashBootTimer = setInterval(() => {
+            const dash = document.getElementById('system-dashboard');
+            if (!dash || dashInitialized) return;
+            if (dash.classList.contains('active')) {
+                dashInitialized = true;
+                const user = document.getElementById('username')?.value?.trim() || '管理員';
+                document.getElementById('dashWelcome').innerText = `你好，${user}`;
+                document.getElementById('dashUserName').innerText = user;
+                clearInterval(dashBootTimer);
+            }
+        }, 120);
     </script>
 </body>
 </html>
+
